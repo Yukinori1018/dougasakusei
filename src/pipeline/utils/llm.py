@@ -53,21 +53,34 @@ def call_json(
     system: str,
     user: str,
     tier: str = "sonnet",
-    max_tokens: int = 4096,
+    max_tokens: int = 8192,
 ) -> dict[str, Any]:
-    """Force JSON output. The model is asked to wrap output in <json>...</json>."""
+    """Force JSON output. Accepts <json>...</json>, ```json``` fence, or bare JSON."""
     wrapped_system = system + (
         "\n\n出力フォーマット: 必ず <json> と </json> で囲んだ valid JSON のみ出力すること。"
-        "JSON 以外の前置きや後置きを書かない。"
+        "JSON 以外の前置きや後置きを書かない。コードブロック（```）は使わない。"
     )
     raw = call_llm(system=wrapped_system, user=user, tier=tier, max_tokens=max_tokens, temperature=0.2)
-    m = re.search(r"<json>(.*?)</json>", raw, re.S)
-    payload = m.group(1) if m else raw
+    payload = _extract_json_payload(raw)
     try:
         return json.loads(payload)
     except json.JSONDecodeError as e:
-        log.warning("JSON parse failed (%s). raw=%s", e, raw[:300])
+        log.warning("JSON parse failed (%s). raw=%s", e, raw[:500])
         return {}
+
+
+def _extract_json_payload(raw: str) -> str:
+    """Pull JSON out of <json>…</json>, ```json…```, ```…```, or first {...}/[...] block."""
+    if (m := re.search(r"<json>\s*(.*?)\s*</json>", raw, re.S)):
+        return m.group(1)
+    if (m := re.search(r"```(?:json)?\s*(.*?)\s*```", raw, re.S)):
+        return m.group(1)
+    stripped = raw.strip()
+    if stripped.startswith("{") or stripped.startswith("["):
+        return stripped
+    if (m := re.search(r"(\{.*\}|\[.*\])", raw, re.S)):
+        return m.group(1)
+    return raw
 
 
 # -----------------------------------------------------------------------------
