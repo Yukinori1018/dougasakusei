@@ -39,7 +39,9 @@ def _generate_structured(state: PipelineState) -> Script:
         "segments の各要素: idx (0始まり), speaker ('user'|'ai'), section, text, notes, "
         "visual_hint, duration_est_sec, claims (各 claim: text, source_urls[])"
     )
-    data = call_json(system=system, user=user, tier=cfg["models"]["script"], max_tokens=6000)
+    data = call_json(system=system, user=user, tier=cfg["models"]["script"], max_tokens=16000)
+    if not data:
+        raise RuntimeError("script JSON empty (likely truncated or unparseable response)")
     return Script.model_validate(data)
 
 
