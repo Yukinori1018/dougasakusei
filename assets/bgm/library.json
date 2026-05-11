@@ -1,0 +1,29 @@
+{
+  "_README": "ライセンス購入済み BGM をこの JSON にメタ登録し、実ファイルを同じディレクトリに置く。tags は LLM 選曲のヒント。",
+  "tracks": [
+    {
+      "id": "calm_corporate_01",
+      "file": "assets/bgm/PLACEHOLDER_calm_corporate.mp3",
+      "title": "Calm Corporate (PLACEHOLDER)",
+      "license": "REPLACE_WITH_ACTUAL_LICENSE",
+      "duration_sec": 180,
+      "tags": ["calm", "corporate", "trust", "explainer", "business"]
+    },
+    {
+      "id": "focus_minimal_01",
+      "file": "assets/bgm/PLACEHOLDER_focus_minimal.mp3",
+      "title": "Focus Minimal (PLACEHOLDER)",
+      "license": "REPLACE_WITH_ACTUAL_LICENSE",
+      "duration_sec": 240,
+      "tags": ["focus", "minimal", "low-energy", "documentary"]
+    },
+    {
+      "id": "uplifting_strings_01",
+      "file": "assets/bgm/PLACEHOLDER_uplifting_strings.mp3",
+      "title": "Uplifting Strings (PLACEHOLDER)",
+      "license": "REPLACE_WITH_ACTUAL_LICENSE",
+      "duration_sec": 200,
+      "tags": ["uplifting", "strings", "conclusion", "positive"]
+    }
+  ]
+}

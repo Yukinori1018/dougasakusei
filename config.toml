@@ -1,0 +1,70 @@
+# Global configuration for the pipeline. User-tunable.
+
+[channel]
+name = "中小企業オーナーのための AI × 税務・補助金"
+description_template = "中小企業オーナー・個人事業主向けに、最新の税制・補助金・AIツール活用を週次でお届け。"
+default_lang = "ja"
+disclaimer = "本動画は一般的な情報提供を目的としており、個別の税務判断は税理士等の専門家にご相談ください。"
+
+[long_form]
+target_duration_sec = 900       # 15 min
+min_duration_sec = 600
+intro_sec = 30
+outro_sec = 30
+
+[shorts]
+target_duration_sec = 50
+max_duration_sec = 60
+aspect = "9:16"
+candidates_per_long = 5
+
+[voice]
+# Which provider for AI segments: elevenlabs | openai | gemini
+ai_provider = "elevenlabs"
+ai_voice_speed = 1.0
+# How much of the script should be user-recorded (intro, conclusion, key claims).
+user_segment_strategy = "key_sections"   # all | key_sections | intro_outro_only
+
+[models]
+# LLM tier per node. Override per-run with --tier.
+research = "sonnet"
+script = "sonnet"
+script_oralize = "haiku"
+factcheck = "sonnet"
+factcheck_hard = "opus"          # promoted when LLM flags uncertainty
+metadata = "haiku"
+compliance = "sonnet"
+
+[research]
+# Whitelisted primary sources (highest priority).
+primary_sources = [
+    "nta.go.jp",                  # 国税庁
+    "chusho.meti.go.jp",          # 中小企業庁
+    "mirasapo-plus.go.jp",        # ミラサポplus
+    "j-net21.smrj.go.jp",         # J-Net21
+    "e-gov.go.jp",                # 法令検索
+    "houjin-bangou.nta.go.jp",
+]
+
+[broll]
+min_clips_per_video = 8
+max_clips_per_video = 20
+candidates_per_query = 10        # collect 10, human picks 1
+
+[bgm]
+# Local-managed BGM library (no Epidemic/Artlist API dependency).
+library_dir = "assets/bgm"
+metadata_file = "assets/bgm/library.json"
+
+[thumbnail]
+candidates = 3
+size = [1280, 720]
+font_path = "assets/fonts/NotoSansJP-Bold.ttf"
+
+[compliance]
+# Required checks before final assembly.
+hallucination = true
+copyright = true
+tax_law_disclaimer = true
+inauthentic_pattern = true
+youtube_ai_disclosure = true     # remind user to flag in Studio

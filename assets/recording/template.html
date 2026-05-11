@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>録音テンプレート</title>
+  <style>
+    body { font-family: -apple-system, "Hiragino Sans", sans-serif; max-width: 820px; margin: 30px auto; padding: 0 20px; line-height: 1.7; }
+    .checklist { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 24px; }
+    .checklist li { margin: 4px 0; }
+    code { background: #eef; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>録音テンプレート（共通手順）</h1>
+
+  <p>動画ごとの実カンペは <code>projects/&lt;slug&gt;/script/teleprompter.html</code> です。
+    本ファイルは <strong>録音前に毎回確認</strong> する標準作業手順書です。</p>
+
+  <h2>録音環境チェックリスト</h2>
+  <ul class="checklist">
+    <li>マイクが体から 15-20cm。ポップフィルター装着</li>
+    <li>エアコン/PC ファン/通知音 OFF</li>
+    <li>サンプルレート 48kHz / 24bit / 1ch（モノラル）</li>
+    <li>テスト録音 → ピーク -6dB を超えない / ノイズフロア -55dB 以下</li>
+    <li>水分補給、口の中を湿らせる</li>
+  </ul>
+
+  <h2>録音手順</h2>
+  <ol>
+    <li>該当プロジェクトの <code>teleprompter.html</code> をブラウザで開く</li>
+    <li>セグメントごとに録音。各セグメント開始前に 1 秒の無音を残す（後の編集で楽になる）</li>
+    <li>NG が出たら <strong>同じ箇所をもう一度言い直す</strong>（後で良いテイクを選ぶ）</li>
+    <li>保存形式: WAV (PCM 16/24bit, 48kHz, mono)</li>
+    <li>ファイル名: <code>seg_NNN.wav</code> として <code>projects/&lt;slug&gt;/audio/user_segments/</code> に保存
+      （プレースホルダ <code>seg_NNN_RECORD_ME.wav</code> を上書き）</li>
+  </ol>
+
+  <h2>音質チェック（録音後）</h2>
+  <ul class="checklist">
+    <li>リップノイズ / ポップノイズが目立たない</li>
+    <li>息継ぎの大きすぎる箇所がない</li>
+    <li>全体ラウドネス -16 LUFS 程度（YouTube 推奨）</li>
+  </ul>
+
+  <h2>ワンポイント</h2>
+  <p>AI 音声と並ぶ箇所では、<strong>あなたの声を「説得・体験談・結論」担当</strong>として、
+    AI 音声よりも 5-10% ゆっくり、感情の振れを大きめに。これが Inauthentic Content 判定の最大の防御になります。</p>
+</body>
+</html>

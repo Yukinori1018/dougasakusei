@@ -1,0 +1,33 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.env
+.env.local
+.DS_Store
+*.log
+
+# Project outputs and large assets — keep structure, ignore content
+projects/*/audio/
+projects/*/visuals/broll/
+projects/*/visuals/charts/
+projects/*/bgm/
+projects/*/output/
+projects/*/timeline/*.drp
+!projects/.gitkeep
+
+# Local BGM library files (license-purchased; keep metadata only)
+assets/bgm/*.wav
+assets/bgm/*.mp3
+assets/bgm/*.flac
+!assets/bgm/library.json
+!assets/bgm/README.md
+
+# Fonts (license-dependent; user installs)
+assets/fonts/*.otf
+assets/fonts/*.ttf
+!assets/fonts/README.md
+
+# Whisper models / caches
+.cache/
+models/
