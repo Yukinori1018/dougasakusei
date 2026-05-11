@@ -13,14 +13,20 @@ log = get_logger(__name__)
 
 
 def _check_url_alive(url: str) -> tuple[bool, int]:
-    """HEAD request with GET fallback. Returns (is_alive, status_code)."""
+    """HEAD with GET fallback. Detects 404-page redirects. Returns (is_alive, status_code)."""
     headers = {"User-Agent": "dougasakusei-factcheck/0.1"}
     try:
         with httpx.Client(timeout=8, follow_redirects=True, headers=headers) as c:
             r = c.head(url)
             if r.status_code >= 400 or r.status_code == 405:
                 r = c.get(url)
-            return r.status_code < 400, r.status_code
+            if r.status_code >= 400:
+                return False, r.status_code
+            # Detect soft-404: server redirected to a known error page (e.g. nta.go.jp/error/404.htm)
+            final_path = str(r.url).lower()
+            if "/error/" in final_path or "404" in final_path.rsplit("/", 1)[-1]:
+                return False, 404
+            return True, r.status_code
     except Exception:  # noqa: BLE001
         return False, 0
 
