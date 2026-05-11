@@ -44,10 +44,35 @@ def generate(
 
 
 @app.command()
-def auto():
-    """トレンドから自動でトピックを選定して生成する（未実装プレースホルダ）。"""
-    console.print("[yellow]auto モードは雛形のみ。Phase 4 でトレンドソース統合予定。[/yellow]")
-    _run("最新のインボイス制度動向と中小企業の対策", Format.LONG, ["インボイス", "経過措置"])
+def auto(
+    fmt: str = typer.Option("long", "--format", "-f", help="long | short"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="トレンドの候補だけ表示して生成しない"),
+):
+    """中小企業庁・経産省・財務省・J-Net21 の RSS からトピックを自動選定して生成する。"""
+    from .utils.trends import collect_trends, rank_topics
+
+    items = collect_trends()
+    if not items:
+        console.print("[yellow]RSS から候補が取れませんでした。手動で --topic を指定してください。[/yellow]")
+        raise typer.Exit(1)
+    picks = rank_topics(items, n=3)
+    if not picks:
+        console.print("[yellow]LLM 評価で候補が0件でした。[/yellow]")
+        raise typer.Exit(1)
+
+    console.print(Panel.fit("[bold]トレンド候補 Top 3[/bold]"))
+    for i, p in enumerate(picks):
+        console.print(f"\n[bold]{i+1}.[/bold] {p.get('topic_phrase', '')}")
+        console.print(f"   hook: {p.get('hook', '')}")
+        console.print(f"   なぜ今: {p.get('why_now', '')}")
+        console.print(f"   キーワード: {', '.join(p.get('suggested_keywords', []))}")
+        console.print(f"   出典: {p.get('source_url', '')}")
+
+    if dry_run:
+        return
+
+    top = picks[0]
+    _run(top.get("topic_phrase", ""), Format(fmt), top.get("suggested_keywords", []))
 
 
 @app.command()

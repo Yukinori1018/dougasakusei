@@ -31,3 +31,4 @@ assets/fonts/*.ttf
 # Whisper models / caches
 .cache/
 models/
+projects/

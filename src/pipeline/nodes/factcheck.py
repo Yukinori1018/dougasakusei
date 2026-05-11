@@ -1,6 +1,8 @@
 """Fact-checking: cross-reference every claim with primary-source URLs."""
 from __future__ import annotations
 
+import httpx
+
 from ..schemas import FactCheckIssue, FactCheckReport, PipelineState
 from ..settings import config
 from ..utils.io import write_json, write_text
@@ -8,6 +10,45 @@ from ..utils.llm import call_json
 from ..utils.logging import get_logger
 
 log = get_logger(__name__)
+
+
+def _check_url_alive(url: str) -> tuple[bool, int]:
+    """HEAD request with GET fallback. Returns (is_alive, status_code)."""
+    headers = {"User-Agent": "dougasakusei-factcheck/0.1"}
+    try:
+        with httpx.Client(timeout=8, follow_redirects=True, headers=headers) as c:
+            r = c.head(url)
+            if r.status_code >= 400 or r.status_code == 405:
+                r = c.get(url)
+            return r.status_code < 400, r.status_code
+    except Exception:  # noqa: BLE001
+        return False, 0
+
+
+def _verify_source_urls(state: PipelineState) -> list[FactCheckIssue]:
+    """Check that every claim's source_urls are reachable. Dead links → high severity."""
+    issues: list[FactCheckIssue] = []
+    if state.script is None:
+        return issues
+    seen: dict[str, tuple[bool, int]] = {}
+    for seg in state.script.segments:
+        for c in seg.claims:
+            for url in c.source_urls:
+                if url not in seen:
+                    seen[url] = _check_url_alive(url)
+                alive, status = seen[url]
+                if not alive:
+                    issues.append(
+                        FactCheckIssue(
+                            segment_idx=seg.idx,
+                            claim=c.text[:120],
+                            severity="high",
+                            reason=f"出典URLにアクセス不可 ({status or 'connection error'}): {url}",
+                            suggested_fix="代替の一次ソースURLに差し替える",
+                        )
+                    )
+    log.info("[factcheck] verified %d unique URLs, %d dead", len(seen), len(issues))
+    return issues
 
 
 def run(state: PipelineState) -> PipelineState:
@@ -38,10 +79,13 @@ def run(state: PipelineState) -> PipelineState:
     tier = config()["models"]["factcheck"]
     data = call_json(system=system, user=user, tier=tier)
 
+    issues = [FactCheckIssue(**i) for i in data.get("issues", [])]
+    issues.extend(_verify_source_urls(state))
+
     report = FactCheckReport(
-        issues=[FactCheckIssue(**i) for i in data.get("issues", [])],
+        issues=issues,
         verified_claim_count=data.get("verified_claim_count", 0),
-        needs_human_review=data.get("needs_human_review", True),
+        needs_human_review=data.get("needs_human_review", True) or bool(issues),
         primary_source_urls=sorted(
             {url for seg in script.segments for c in seg.claims for url in c.source_urls}
         ),
@@ -52,7 +96,10 @@ def run(state: PipelineState) -> PipelineState:
         log.info("[factcheck] high-severity issues found → re-run with opus tier")
         data2 = call_json(system=system, user=user, tier=config()["models"]["factcheck_hard"])
         if data2.get("issues") is not None:
-            report.issues = [FactCheckIssue(**i) for i in data2.get("issues", [])]
+            llm_issues = [FactCheckIssue(**i) for i in data2.get("issues", [])]
+            # Keep dead-link issues from URL check (LLM can't verify network state)
+            dead_link_issues = [i for i in report.issues if "アクセス不可" in i.reason]
+            report.issues = llm_issues + dead_link_issues
             report.needs_human_review = True
 
     pd = state.project_path()

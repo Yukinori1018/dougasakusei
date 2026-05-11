@@ -74,11 +74,7 @@ def run(state: PipelineState) -> PipelineState:
     script = _oralize(script)
     script.total_duration_est_sec = sum(s.duration_est_sec for s in script.segments)
 
-    pd = state.project_path()
-    write_json(pd / "script" / "script.json", script)
-    write_text(pd / "script" / "script.md", _to_markdown(script))
-    write_text(pd / "script" / "teleprompter.html", _to_teleprompter(script))
-
+    _persist(state, script)
     state.script = script
     log.info(
         "[script] %d segments (user=%d, ai=%d), est %ds",
@@ -88,6 +84,13 @@ def run(state: PipelineState) -> PipelineState:
         int(script.total_duration_est_sec),
     )
     return state
+
+
+def _persist(state: PipelineState, script: Script) -> None:
+    pd = state.project_path()
+    write_json(pd / "script" / "script.json", script)
+    write_text(pd / "script" / "script.md", _to_markdown(script))
+    write_text(pd / "script" / "teleprompter.html", _to_teleprompter(script))
 
 
 def _to_markdown(s: Script) -> str:

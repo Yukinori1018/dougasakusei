@@ -5,10 +5,12 @@ from langgraph.graph import END, StateGraph
 
 from .nodes import (
     bgm,
+    charts,
     compliance,
     factcheck,
     metadata,
     research,
+    revisor,
     script,
     shorts,
     subtitle,
@@ -29,10 +31,12 @@ def build_graph():
     g.add_node("factcheck", factcheck.run)
     g.add_node("voice", voice.run)
     g.add_node("visual", visual.run)
+    g.add_node("charts", charts.run)
     g.add_node("subtitle", subtitle.run)
     g.add_node("bgm", bgm.run)
     g.add_node("metadata", metadata.run)
     g.add_node("compliance", compliance.run)
+    g.add_node("revisor", revisor.run)
     g.add_node("timeline", timeline.run)
     g.add_node("shorts", shorts.run)
 
@@ -44,11 +48,13 @@ def build_graph():
     # and we keep state.simple. Parallel branches would force pydantic state merges.
     g.add_edge("factcheck", "voice")
     g.add_edge("voice", "visual")
-    g.add_edge("visual", "subtitle")
+    g.add_edge("visual", "charts")
+    g.add_edge("charts", "subtitle")
     g.add_edge("subtitle", "bgm")
     g.add_edge("bgm", "metadata")
     g.add_edge("metadata", "compliance")
-    g.add_edge("compliance", "timeline")
+    g.add_edge("compliance", "revisor")
+    g.add_edge("revisor", "timeline")
     g.add_edge("timeline", "shorts")
     g.add_edge("shorts", END)
 
