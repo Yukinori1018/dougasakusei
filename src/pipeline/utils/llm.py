@@ -38,13 +38,16 @@ def call_llm(
         return _mock_response(system, user)
 
     model = TIER_TO_MODEL.get(tier, TIER_TO_MODEL["sonnet"])
-    resp = _client().messages.create(
-        model=model,
-        max_tokens=max_tokens,
-        temperature=temperature,
-        system=system,
-        messages=[{"role": "user", "content": user}],
-    )
+    kwargs: dict[str, Any] = {
+        "model": model,
+        "max_tokens": max_tokens,
+        "system": system,
+        "messages": [{"role": "user", "content": user}],
+    }
+    # Opus 4.7 deprecates the temperature parameter. Only pass it for tiers that accept it.
+    if tier != "opus":
+        kwargs["temperature"] = temperature
+    resp = _client().messages.create(**kwargs)
     return "".join(block.text for block in resp.content if getattr(block, "type", "") == "text")
 
 

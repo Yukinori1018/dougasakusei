@@ -1,11 +1,15 @@
 """Trend collection: pull from public RSS feeds and let an LLM rank candidates.
 
-We avoid the unofficial Google Trends scrapers (pytrends is fragile and
-intermittently blocks). Instead we pull RSS feeds that are stable and
-freely accessible, then ask Claude to dedupe and rank for our channel niche.
+Strategy:
+1. Try RSS feeds (best effort; Japanese govt feeds are unreliable).
+2. If RSS yields nothing, ask Claude to brainstorm timely topics for our niche
+   using its knowledge of current Japanese SMB / tax / subsidy events.
+
+The LLM ranker is the real intelligence; RSS is a tiebreaker / freshness signal.
 """
 from __future__ import annotations
 
+import datetime as _dt
 import re
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
@@ -18,14 +22,13 @@ from .logging import get_logger
 log = get_logger(__name__)
 
 
-# Stable RSS sources that cover Japanese SMB / tax / subsidy / AI topics.
-# Keep this list short — the LLM ranker is the real intelligence.
+# Best-effort RSS sources. These URLs change occasionally; failures are tolerated
+# and the LLM brainstorm fallback kicks in.
 _RSS_SOURCES = [
-    # 国税庁 新着情報（JSON 風だが RSS 互換ではない場合があるため除外）
-    "https://www.chusho.meti.go.jp/koukai/rss/index.rdf",  # 中小企業庁
-    "https://www.meti.go.jp/rss/press.rdf",  # 経済産業省 プレス
-    "https://www.j-net21.smrj.go.jp/snews/rss/news.xml",  # J-Net21
-    "https://www.mof.go.jp/rss/news.xml",  # 財務省
+    "https://www.meti.go.jp/main/rss/press.rdf",        # 経済産業省 プレス
+    "https://www.j-net21.smrj.go.jp/rss/news.xml",      # J-Net21
+    "https://www.zaikei.co.jp/rss/sougou.xml",          # 財経新聞 総合
+    "https://www3.nhk.or.jp/rss/news/cat5.xml",         # NHK 経済
 ]
 
 
@@ -83,11 +86,41 @@ def _parse_feed(body: str, source: str) -> list[TrendItem]:
     return items[:15]  # cap per feed
 
 
+def _brainstorm_fallback() -> list[TrendItem]:
+    """When RSS yields nothing, ask Claude to enumerate timely SMB/tax topics."""
+    today = _dt.date.today().isoformat()
+    system = (
+        "あなたは中小企業オーナー向け『AI × 税務・補助金』YouTube チャンネルの編集者です。"
+        f"今日は {today}。直近3ヶ月以内に検索需要が高まる、または期限が迫っている日本の中小企業向け"
+        "税務・補助金・制度変更トピックを 8 件挙げてください。出力は JSON のみ。"
+    )
+    user = (
+        "JSON keys: items (list of {title, summary, link})。"
+        "title は YouTube サムネ向けの 30 文字以内、summary は 80 文字以内、"
+        "link は出典となる公式サイト URL（nta.go.jp / chusho.meti.go.jp / meti.go.jp 等）。"
+    )
+    data = call_json(system=system, user=user, tier="sonnet")
+    return [
+        TrendItem(
+            title=it.get("title", ""),
+            link=it.get("link", ""),
+            source="llm-brainstorm",
+            summary=it.get("summary", ""),
+        )
+        for it in data.get("items", [])
+        if it.get("title")
+    ]
+
+
 def collect_trends() -> list[TrendItem]:
     items: list[TrendItem] = []
     for url in _RSS_SOURCES:
         items.extend(_fetch_rss(url))
-    log.info("[trends] collected %d items from %d feeds", len(items), len(_RSS_SOURCES))
+    log.info("[trends] collected %d items from %d RSS feeds", len(items), len(_RSS_SOURCES))
+    if not items:
+        log.info("[trends] RSS empty — falling back to LLM brainstorm")
+        items = _brainstorm_fallback()
+        log.info("[trends] brainstorm produced %d items", len(items))
     return items
 
 
