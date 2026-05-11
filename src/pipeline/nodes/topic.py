@@ -13,6 +13,30 @@ from ..utils.paths import new_project_dir
 log = get_logger(__name__)
 
 
+def _flatten_to_str(v) -> str:
+    """Claude sometimes returns rich structures where we expect a string. Flatten safely."""
+    if v is None:
+        return ""
+    if isinstance(v, str):
+        return v
+    if isinstance(v, dict):
+        return " / ".join(_flatten_to_str(x) for x in v.values() if x)
+    if isinstance(v, list):
+        return " / ".join(_flatten_to_str(x) for x in v if x)
+    return str(v)
+
+
+def _coerce_topic_data(data: dict) -> dict:
+    """Coerce LLM output into shapes the Topic schema accepts."""
+    out = dict(data)
+    for str_field in ("slug", "title_working", "hook", "target_audience", "rationale"):
+        if str_field in out:
+            out[str_field] = _flatten_to_str(out[str_field])
+    if "keywords" in out and not isinstance(out["keywords"], list):
+        out["keywords"] = [_flatten_to_str(out["keywords"])]
+    return out
+
+
 def _slugify(s: str) -> str:
     s = re.sub(r"[^a-zA-Z0-9一-龯ぁ-んァ-ヶー]+", "-", s)
     return s.strip("-")[:60].lower() or "video"
@@ -44,6 +68,7 @@ def run(state: PipelineState) -> PipelineState:
             "rationale": "ユーザー指定",
         }
 
+    data = _coerce_topic_data(data)
     topic = Topic(**{k: v for k, v in data.items() if k in Topic.model_fields})
     topic.slug = _slugify(topic.slug or state.config.topic)
 
