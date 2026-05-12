@@ -10,6 +10,7 @@ from ..settings import config, effective_mode
 from ..utils.io import write_json
 from ..utils.llm import call_json
 from ..utils.logging import get_logger
+from ..utils.urlcheck import check_url_alive
 
 log = get_logger(__name__)
 
@@ -61,11 +62,19 @@ def run(state: PipelineState) -> PipelineState:
         "brief": data.get("brief", ""),
         "key_points": data.get("key_points", []),
     }
-    for url in data.get("primary_source_urls", []):
-        if not isinstance(url, str):
-            continue
+    proposed = [u for u in data.get("primary_source_urls", []) if isinstance(u, str)]
+    dead: list[str] = []
+    for url in proposed:
+        if effective_mode() == "auto":
+            alive, status = check_url_alive(url)
+            if not alive:
+                dead.append(f"{url} (status={status or 'conn-err'})")
+                continue
         domain = httpx.URL(url).host if url.startswith("http") else ""
         state.sources.append(Source(url=url, domain=domain, is_primary=True))
+    if dead:
+        log.warning("[research] dropped %d dead LLM-suggested URLs: %s", len(dead), dead)
+        brief["dropped_urls"] = dead
 
     write_json(pd / "research" / "brief.json", brief)
     write_json(pd / "research" / "sources.json", state.sources)

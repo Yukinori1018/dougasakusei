@@ -27,6 +27,7 @@ def _generate_structured(state: PipelineState) -> Script:
         "各 claim には source_urls を必ず付ける（一次ソース優先）。"
         "断定的判断の提供を避け、必要に応じて『個別判断は専門家に』の旨を含める。"
     )
+    verified_urls = [s.url for s in state.sources if s.is_primary]
     user = (
         f"テーマ: {topic.title_working if topic else state.config.topic}\n"
         f"視聴者: {topic.target_audience if topic else ''}\n"
@@ -35,9 +36,11 @@ def _generate_structured(state: PipelineState) -> Script:
         f"研究ブリーフ: {brief.get('brief', '')}\n"
         f"論点候補: {brief.get('key_points', [])}\n"
         f"目標尺(秒): {target}\n\n"
+        f"使用可能な出典URL（この一覧から選び、新規URL生成は禁止）:\n{chr(10).join('- ' + u for u in verified_urls)}\n\n"
         "JSON keys: title, summary, segments[]。"
         "segments の各要素: idx (0始まり), speaker ('user'|'ai'), section, text, notes, "
-        "visual_hint, duration_est_sec, claims (各 claim: text, source_urls[])"
+        "visual_hint, duration_est_sec, claims (各 claim: text, source_urls[])。"
+        "claims の source_urls は必ず上記の使用可能URLから選択すること。"
     )
     data = call_json(system=system, user=user, tier=cfg["models"]["script"], max_tokens=16000)
     if not data:

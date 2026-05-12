@@ -1,34 +1,14 @@
 """Fact-checking: cross-reference every claim with primary-source URLs."""
 from __future__ import annotations
 
-import httpx
-
 from ..schemas import FactCheckIssue, FactCheckReport, PipelineState
 from ..settings import config
 from ..utils.io import write_json, write_text
 from ..utils.llm import call_json
 from ..utils.logging import get_logger
+from ..utils.urlcheck import check_url_alive
 
 log = get_logger(__name__)
-
-
-def _check_url_alive(url: str) -> tuple[bool, int]:
-    """HEAD with GET fallback. Detects 404-page redirects. Returns (is_alive, status_code)."""
-    headers = {"User-Agent": "dougasakusei-factcheck/0.1"}
-    try:
-        with httpx.Client(timeout=8, follow_redirects=True, headers=headers) as c:
-            r = c.head(url)
-            if r.status_code >= 400 or r.status_code == 405:
-                r = c.get(url)
-            if r.status_code >= 400:
-                return False, r.status_code
-            # Detect soft-404: server redirected to a known error page (e.g. nta.go.jp/error/404.htm)
-            final_path = str(r.url).lower()
-            if "/error/" in final_path or "404" in final_path.rsplit("/", 1)[-1]:
-                return False, 404
-            return True, r.status_code
-    except Exception:  # noqa: BLE001
-        return False, 0
 
 
 def _verify_source_urls(state: PipelineState) -> list[FactCheckIssue]:
@@ -41,7 +21,7 @@ def _verify_source_urls(state: PipelineState) -> list[FactCheckIssue]:
         for c in seg.claims:
             for url in c.source_urls:
                 if url not in seen:
-                    seen[url] = _check_url_alive(url)
+                    seen[url] = check_url_alive(url)
                 alive, status = seen[url]
                 if not alive:
                     issues.append(
