@@ -1,0 +1,37 @@
+{
+  "findings": [
+    {
+      "check": "tax_law",
+      "severity": "info",
+      "detail": "断定的表現なし。免責文言が必要。",
+      "suggestion": "概要欄に税理士監修の有無を明記"
+    },
+    {
+      "check": "copyright",
+      "severity": "ok",
+      "detail": "第三者素材の引用は確認できず。",
+      "suggestion": ""
+    },
+    {
+      "check": "inauthentic",
+      "severity": "ok",
+      "detail": "ユーザー音声 127s (33%)",
+      "suggestion": ""
+    },
+    {
+      "check": "hallucination",
+      "severity": "block",
+      "detail": "事実検証で 1 件の重大な未確認クレーム",
+      "suggestion": "出典追加または該当セグメント書き直し"
+    }
+  ],
+  "blocking": true,
+  "ai_disclosure_required": true,
+  "checklist_for_studio": [
+    "YouTube Studio で『合成・改変メディア』の AI 使用開示にチェックを入れる",
+    "概要欄末尾に税理士監修の有無 / 一般情報である旨を明記",
+    "BGM のライセンスを再確認（library.json と一致しているか）",
+    "B-roll 採用素材のクレジット要否を確認",
+    "サムネに使用した数字・主張に出典があるか確認"
+  ]
+}

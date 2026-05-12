@@ -1,0 +1,16 @@
+{
+  "issues": [
+    {
+      "segment_idx": 1,
+      "claim": "2023年10月にインボイス制度が開始",
+      "severity": "high",
+      "reason": "出典URLにアクセス不可 (403): https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/invoice.htm",
+      "suggested_fix": "代替の一次ソースURLに差し替える"
+    }
+  ],
+  "verified_claim_count": 5,
+  "needs_human_review": true,
+  "primary_source_urls": [
+    "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/invoice.htm"
+  ]
+}
