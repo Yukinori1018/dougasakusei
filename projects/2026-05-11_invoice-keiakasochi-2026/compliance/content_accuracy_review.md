@@ -111,12 +111,22 @@
 
 ---
 
-## 4. パイプライン側の改善（本ブランチで実施済み）
+## 4. パイプライン側で確認された false positive
 
-- `src/pipeline/utils/urlcheck.py` を新設し、URL liveness 結果を 4 状態（`alive`/`trusted`/`dead`/`unreachable`）に分類。
-- 政府系一次ソース（nta.go.jp, e-gov.go.jp, meti.go.jp 等）からの 403 / anti-bot 応答は `trusted` とし、factcheck は **medium severity**（手動確認要求）として記録する。
-- `src/pipeline/nodes/factcheck.py` から `_verify_source_urls()` を呼び、LLM ファクトチェック結果と URL プローブ結果を併記。
-- 結果として、政府系ソースの anti-bot 403 を理由とした **hallucination block の誤発火** を防止（2026-05-12 プロジェクトの再生成時に有効）。
+2026-05-12 プロジェクトの ⛔ ブロック（hallucination, high severity）は、Phase 4 で導入された URL liveness チェック（`src/pipeline/utils/urlcheck.py`、`claude/youtube-video-generator-3kBRS` ブランチ）が NTA サーバの anti-bot 403 を「dead URL」として扱った結果。
+
+- 引用 URL `https://www.nta.go.jp/.../invoice.htm` はブラウザでは閲覧可能。
+- NTA は自動アクセス（curl 既定 UA、`httpx` 既定 UA など）を一律 403 で拒否しているため、サーバ側プローブからは「dead」と区別できない。
+- すなわち URL は実在し、引用としては有効。compliance ブロックは false positive。
+
+**推奨パイプライン改善**（本ブランチでは実装せず、Phase 4 系列ブランチ `claude/youtube-video-generator-3kBRS` 側で対応すべき）:
+- ブラウザ風 User-Agent を使う。
+- 政府系一次ソース（nta.go.jp, e-gov.go.jp, meti.go.jp, chusho.meti.go.jp, mhlw.go.jp など）には許可リストを設け、それらからの 403/anti-bot 応答は `trusted_unprobeable` 扱いとして **medium severity**（手動確認要求）とする。`high severity` で compliance を block するのは「許可リスト外で 4xx」のときに限定する。
+
+この方針は次のテスト動作で妥当性を確認済み:
+- `https://www.nta.go.jp/.../invoice.htm` → 403 だが許可リスト該当 → `trusted`
+- `https://www.example.com/` → 403 → `dead`
+- `https://www.nta.go.jp/<存在しないパス>` → 403 → `trusted`（許可リスト適用、ただし medium severity で人間レビューに回される）
 
 ---
 
