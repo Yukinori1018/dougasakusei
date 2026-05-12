@@ -76,6 +76,11 @@ uv run pipeline report --project 2026-05-11_invoice-keiakasochi-2026
 `projects/<slug>/timeline/project.otio`（または `.fcpxml`, `.edl`）を
 DaVinci Resolve / Premiere Pro / Final Cut Pro で開いて微調整。
 
+### 8. 投稿までの手順書
+
+人間が実際に手を動かす全工程（録音 → DaVinci → YouTube Studio）は
+[`HUMAN_RUNBOOK.md`](HUMAN_RUNBOOK.md) を参照してください。
+
 ## API キー取得方法
 
 | サービス | 用途 | 取得 URL |
@@ -131,7 +136,7 @@ config.toml               # チャンネル全体設定
 
 ## 制約と注意事項
 
-- **税理士法**: 本パイプラインの出力は一般情報提供であり、個別の税務助言ではありません。投稿前に税理士監修を推奨。
+- **税理士法**: 本パイプラインの出力は一般情報提供であり、個別の税務助言ではありません。本リポジトリの運用方針は「税理士監修を入れずに公開する」前提のため、台本 intro/cta に免責文を必須化し、視聴者からの個別相談には固定コメントで税理士相談を案内する運用とします。
 - **金商法**: 投資商品の断定的判断の提供はコンプラチェッカーがブロックしますが、最終判断は人間が行ってください。
 - **YouTube Inauthentic Content ポリシー (2025-07-15 改定)**: 自分の声・体験談を必ず含める運用が前提です。
 - **BGM ライセンス**: `assets/bgm/library.json` の `license` 欄を必ず購入実体に合わせて更新してください。

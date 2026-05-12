@@ -3,8 +3,8 @@
     {
       "check": "tax_law",
       "severity": "info",
-      "detail": "断定的表現を緩和済み（『〜を検討する余地があります』形式）。intro/cta 双方に税理士監修非該当の免責を挿入。",
-      "suggestion": "公開前に税理士または有資格者の確認をもって最終承認とする。"
+      "detail": "本動画は税理士監修なしで公開する運用方針。断定的表現は『〜を検討する余地があります』に緩和済み。intro / cta で『一般的な情報提供であり個別税務相談に該当しない・個別判断は税理士に相談』を明示。",
+      "suggestion": "公開後も視聴者からの個別相談には回答せず、税理士相談を案内する運用ルールを徹底すること。"
     },
     {
       "check": "copyright",
@@ -15,13 +15,13 @@
     {
       "check": "inauthentic",
       "severity": "ok",
-      "detail": "ユーザー音声 143s (32%)。intro/体験談/conclusion/cta の4箇所で人間語りを確保。",
+      "detail": "ユーザー音声 143s (32%)。intro / 体験談 / conclusion / cta の4箇所で人間語りを確保。",
       "suggestion": ""
     },
     {
       "check": "hallucination",
       "severity": "ok",
-      "detail": "全クレームが政府系一次ソースに紐付き。URL のサーバ自動アクセスは NTA の anti-bot により 403 だが、ブラウザでの実在確認は可。compliance ブロックは false-positive と判定済み（content_accuracy_review.md 参照）。",
+      "detail": "全クレームが政府系一次ソースに紐付き。NTA の anti-bot による 403 は false-positive と判定済み（content_accuracy_review.md §4 参照）。",
       "suggestion": "公開前に主要URLをブラウザで開いて該当記載を確認すること。"
     }
   ],
@@ -29,10 +29,11 @@
   "ai_disclosure_required": true,
   "checklist_for_studio": [
     "YouTube Studio で『合成・改変メディア』の AI 使用開示にチェックを入れる",
-    "概要欄末尾に税理士監修の有無 / 一般情報である旨を明記（テンプレ済み）",
+    "概要欄末尾の免責文（『一般的な情報提供であり、個別税務相談には該当しない / 個別の適用判断は税理士に相談』）が残っていることを確認",
     "BGM のライセンスを再確認（library.json と一致しているか）",
     "B-roll 採用素材のクレジット要否を確認",
     "サムネに使用した数字・主張に出典があるか確認",
-    "概要欄の出典URLをブラウザで開き、各クレームの記載を確認"
+    "概要欄の出典URLをブラウザで開き、各クレームの記載を確認",
+    "コメント欄ルール: 個別税務相談には回答せず税理士相談を案内する旨を固定コメント or 概要欄に明示"
   ]
 }
