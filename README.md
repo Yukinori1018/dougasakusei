@@ -78,8 +78,8 @@ DaVinci Resolve / Premiere Pro / Final Cut Pro で開いて微調整。
 
 ### 8. 投稿までの手順書
 
-人間が実際に手を動かす全工程（録音 → DaVinci → YouTube Studio）は
-[`HUMAN_RUNBOOK.md`](HUMAN_RUNBOOK.md) を参照してください。
+- 初めての方（macOS）: [`QUICKSTART_MAC.md`](QUICKSTART_MAC.md) ← Homebrew / uv / API キーまでゼロから
+- 1 本投稿するまでの全工程: [`HUMAN_RUNBOOK.md`](HUMAN_RUNBOOK.md)
 
 ## API キー取得方法
 

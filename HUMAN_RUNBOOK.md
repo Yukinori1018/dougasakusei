@@ -9,13 +9,16 @@
 
 ## 0. 一度だけやる初期セットアップ
 
+**初めての方は先に [`QUICKSTART_MAC.md`](QUICKSTART_MAC.md) を実行してください。**
+Homebrew / uv / リポジトリ取得 / `.env` / Anthropic API キーまで、ゼロからコピペで進められる手順を用意しています。
+それが終わったら下記の任意項目だけ済ませて Step 1 に進んでください。
+
 | ステップ | コマンド / 操作 | 目安 |
 |---|---|---|
-| 0-1 | `cd dougasakusei && uv venv && uv pip install -e ".[audio]"` | 5分 |
-| 0-2 | `cp .env.example .env` を作り、`ANTHROPIC_API_KEY` を最低限記入。任意で `ELEVENLABS_API_KEY` / `PEXELS_API_KEY` / `FAL_KEY` を追加 | 5分 |
-| 0-3 | `assets/bgm/library.json` のローカル BGM ライセンスを実購入実体に合わせて確認 | 5分 |
-| 0-4 | DaVinci Resolve をインストール、`Preferences > General > Working Folders` を確認 | 10分 |
-| 0-5 | （任意）`config.toml` の `[long_form].target_duration_sec` などをチャンネル方針に合わせて編集 | 5分 |
+| 0-1 | （初回必須）`QUICKSTART_MAC.md` を §1〜§7 まで実行 | 30〜40 分 |
+| 0-2 | `assets/bgm/library.json` のローカル BGM ライセンスを実購入実体に合わせて確認 | 5 分 |
+| 0-3 | DaVinci Resolve をインストール（公式無料版）、`Preferences > General > Working Folders` を確認 | 10 分 |
+| 0-4 | （任意）`config.toml` の `[long_form].target_duration_sec` などをチャンネル方針に合わせて編集 | 5 分 |
 
 ---
 
