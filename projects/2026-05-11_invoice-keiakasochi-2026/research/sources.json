@@ -3,7 +3,7 @@
     "url": "https://nta.go.jp/",
     "title": "",
     "domain": "nta.go.jp",
-    "fetched_at": "2026-05-11T00:40:26.009181",
+    "fetched_at": "2026-05-12T00:00:00",
     "snippet": "",
     "is_primary": true
   },
@@ -11,7 +11,7 @@
     "url": "https://chusho.meti.go.jp/",
     "title": "",
     "domain": "chusho.meti.go.jp",
-    "fetched_at": "2026-05-11T00:40:26.009189",
+    "fetched_at": "2026-05-12T00:00:00",
     "snippet": "",
     "is_primary": true
   },
@@ -19,7 +19,7 @@
     "url": "https://mirasapo-plus.go.jp/",
     "title": "",
     "domain": "mirasapo-plus.go.jp",
-    "fetched_at": "2026-05-11T00:40:26.009191",
+    "fetched_at": "2026-05-12T00:00:00",
     "snippet": "",
     "is_primary": true
   },
@@ -27,7 +27,7 @@
     "url": "https://j-net21.smrj.go.jp/",
     "title": "",
     "domain": "j-net21.smrj.go.jp",
-    "fetched_at": "2026-05-11T00:40:26.009193",
+    "fetched_at": "2026-05-12T00:00:00",
     "snippet": "",
     "is_primary": true
   },
@@ -35,7 +35,7 @@
     "url": "https://e-gov.go.jp/",
     "title": "",
     "domain": "e-gov.go.jp",
-    "fetched_at": "2026-05-11T00:40:26.009199",
+    "fetched_at": "2026-05-12T00:00:00",
     "snippet": "",
     "is_primary": true
   },
@@ -43,7 +43,15 @@
     "url": "https://houjin-bangou.nta.go.jp/",
     "title": "",
     "domain": "houjin-bangou.nta.go.jp",
-    "fetched_at": "2026-05-11T00:40:26.009201",
+    "fetched_at": "2026-05-12T00:00:00",
+    "snippet": "",
+    "is_primary": true
+  },
+  {
+    "url": "https://www.jftc.go.jp/",
+    "title": "",
+    "domain": "www.jftc.go.jp",
+    "fetched_at": "2026-05-12T00:00:00",
     "snippet": "",
     "is_primary": true
   },
@@ -51,7 +59,23 @@
     "url": "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/invoice.htm",
     "title": "",
     "domain": "www.nta.go.jp",
-    "fetched_at": "2026-05-11T00:40:26.012095",
+    "fetched_at": "2026-05-12T00:00:00",
+    "snippet": "",
+    "is_primary": true
+  },
+  {
+    "url": "https://elaws.e-gov.go.jp/document?lawid=363AC0000000108",
+    "title": "",
+    "domain": "elaws.e-gov.go.jp",
+    "fetched_at": "2026-05-12T00:00:00",
+    "snippet": "",
+    "is_primary": true
+  },
+  {
+    "url": "https://www.nta.go.jp/taxes/tetsuzuki/shinsei/annai/shohi/annai/1461_03.htm",
+    "title": "",
+    "domain": "www.nta.go.jp",
+    "fetched_at": "2026-05-12T00:00:00",
     "snippet": "",
     "is_primary": true
   },
@@ -59,7 +83,23 @@
     "url": "https://www.chusho.meti.go.jp/zaimu/zeisei/invoice.html",
     "title": "",
     "domain": "www.chusho.meti.go.jp",
-    "fetched_at": "2026-05-11T00:40:26.012126",
+    "fetched_at": "2026-05-12T00:00:00",
+    "snippet": "",
+    "is_primary": true
+  },
+  {
+    "url": "https://www.jftc.go.jp/dk/guideline/unyoukijun/transactionsbetweenenterprises_qa.html",
+    "title": "",
+    "domain": "www.jftc.go.jp",
+    "fetched_at": "2026-05-12T00:00:00",
+    "snippet": "",
+    "is_primary": true
+  },
+  {
+    "url": "https://www.nta.go.jp/law/joho-zeikaishaku/sonota/jirei/0021006-031.htm",
+    "title": "",
+    "domain": "www.nta.go.jp",
+    "fetched_at": "2026-05-12T00:00:00",
     "snippet": "",
     "is_primary": true
   }

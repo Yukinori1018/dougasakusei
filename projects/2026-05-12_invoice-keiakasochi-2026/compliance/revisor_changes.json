@@ -1,10 +1,6 @@
-[
-  {
-    "idx": 1,
-    "issues": [
-      "[factcheck/high] 出典URLにアクセス不可 (403): https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/invoice.htm → 代替の一次ソースURLに差し替える"
-    ],
-    "before": "まずインボイス経過措置とは、2023年10月にインボイス制度が始まった際に設けられた、免税事業者からの仕入れについて段階的に仕入税額控除を縮小していく仕組みです。",
-    "after": "指摘事項:\n- [factcheck/high] 出典URLにアクセス不可 (403): https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/invoice.htm → 代替の一次ソースURLに差し替える\n\n本文:\nまずインボイス経過措置とは、2023年10月にインボイス制度が始まった際に設けられた、免税事業者からの仕入れについて段階的に仕入税額控除を縮小していく仕組みです。"
-  }
-]
+{
+  "source": "manual_review_from_content_accuracy_review",
+  "review_doc": "projects/2026-05-11_invoice-keiakasochi-2026/compliance/content_accuracy_review.md",
+  "applied_priorities": ["P0", "P1", "P2"],
+  "summary": "2026-05-11 のコンテンツ精度レビューで指摘された P0/P1/P2 を 2026-05-12 にも反映。"
+}
